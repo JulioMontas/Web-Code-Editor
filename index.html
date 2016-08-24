@@ -1,0 +1,107 @@
+<!doctype html>
+
+<title>My Text editor</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel=stylesheet href="css/master.css">
+<link rel=stylesheet href=css/codemirror.css>
+<script src=js/lib/codemirror/codemirror.js></script>
+<script src=js/lib/codemirror/mode/xml/xml.js></script>
+<script src=js/lib/codemirror/mode/javascript/javascript.js></script>
+<script src=js/lib/codemirror/mode/css/css.js></script>
+<script src=js/lib/codemirror/mode/htmlmixed/htmlmixed.js></script>
+<script src=js/main.js></script>
+<style type=text/css>
+      body{
+        margin: 0;
+      }
+      header {
+        position: absolute;
+        width: 100%;
+        z-index: 2;
+      }
+      header a {
+        float: right;
+        margin-right: 10px;
+        margin-top: 10px;
+        text-decoration: none;
+      }
+      header a:hover {
+        color:#ccc;
+      }
+      .CodeMirror {
+        font-size: 1.5em;
+        height: 100%;
+        opacity: 0.9;
+        position: fixed;
+        width: 100%;
+      }
+       #preview {
+         height: 100%;
+         position: fixed;
+         width: 100%;
+         z-index: -1;
+         border: none;
+         background: white;
+       }
+    </style>
+<header>
+  <a href="#" id="btnHide">Hide</a>
+  <a href="#" id="btnShow">Show</a>
+</header>
+<textarea id="code" name="code">
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>My Code Editor</title>
+    <script src="https://npmcdn.com/react@15.3.1/dist/react.js"></script>
+    <script src="https://npmcdn.com/react-dom@15.3.1/dist/react-dom.js"></script>
+    <script src="https://npmcdn.com/babel-core@5.8.38/browser.min.js"></script>
+    <script src="https://npmcdn.com/jquery@3.1.0/dist/jquery.min.js"></script>
+    <script src="https://npmcdn.com/remarkable@1.6.2/dist/remarkable.min.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="text/babel">
+    class CanvasComponent extends React.Component {
+         componentDidMount() {
+             this.updateCanvas();
+         }
+         updateCanvas() {
+             const ctx = this.refs.canvas.getContext('2d');
+             ctx.fillRect(0,0, 100, 100);
+         }
+         render() {
+             return (
+                 <canvas ref="canvas" width={300} height={300}/>
+             );
+         }
+     }
+     ReactDOM.render(<CanvasComponent/>, document.getElementById('app'));
+    </script>
+  </body>
+</html>
+</textarea>
+
+    <iframe id=preview></iframe>
+    <script>
+      var delay;
+      // Initialize CodeMirror editor with a nice html5 canvas demo.
+      var editor = CodeMirror.fromTextArea(document.getElementById('code'), {
+        mode: 'text/html'
+      });
+      editor.on("change", function() {
+        clearTimeout(delay);
+        delay = setTimeout(updatePreview, 300);
+      });
+
+      function updatePreview() {
+        var previewFrame = document.getElementById('preview');
+        var preview =  previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+        preview.open();
+        preview.write(editor.getValue());
+        preview.close();
+      }
+      setTimeout(updatePreview, 300);
+    </script>
